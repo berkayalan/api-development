@@ -13,12 +13,10 @@ def prepare_data(path_to_data, encoding="latin-1"):
     # Read data from path
     data = pd.read_csv(path_to_data)
 
-    X = data.drop("Outcome",axis=1)
-    y=  data["Outcome"] #We will predict Outcome(diabetes) 
+    training_data = data.drop("Outcome",axis=1)
+    target_data = data["Outcome"].values #We will predict Outcome(diabetes) 
 
-
-    return {'training_data':X, 
-            'target_data':y}
+    return training_data, target_data
 
 def create_train_test_data(X, y, random_state):
 

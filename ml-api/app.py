@@ -25,6 +25,8 @@ def main(title = "Awesome Streamlit Diabetes classification App".upper()):
 
         inputs = [pregnancy,glucose,blood,skin,insulin,float(bmi), float(pedigree),age]
 
+        print(inputs)
+
         if st.button("Predict"):
 
             prediction = diabetes_clf.predict([inputs])
