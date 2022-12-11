@@ -5,4 +5,4 @@ Api development examples
 
 - Fastapi with Docker - Basic
 
-- Diabetes detection system created with FastAPI : In order to use it, please go to "fastapi" branch.
+- Diabetes detection system created with FastAPI(ml-api) : In order to use it, please go to "fastapi" branch.
