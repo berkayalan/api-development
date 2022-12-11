@@ -1,6 +1,6 @@
 import pandas as pd 
 
-def prepare_data(path_to_data, encoding="latin-1"):
+def prepare_data(path_to_data):
     """
         @params:
             - path_to_data: the path to the data

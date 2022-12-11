@@ -1,42 +1,38 @@
-import packages.data_processor as dp
 import streamlit as st 
 import joblib
+from fastapi import FastAPI, HTTPException
 
 # Load the model
 diabetes_clf = joblib.load(open('./models/diabetes_detector_model.pkl','rb'))
 
-### MAIN FUNCTION ###
-def main(title = "Awesome Streamlit Diabetes classification App".upper()):
-    st.markdown("<h1 style='text-align: center; font-size: 65px; color: #4682B4;'>{}</h1>".format(title), 
-    unsafe_allow_html=True)
-    st.image("./images/diabetes.jpeg")
-    info = ''
-    
-    with st.expander("1. Check if yo've diabetes or not'"):
+# Initialize an instance of FastAPI
+app = FastAPI()
 
-        pregnancy = st.number_input("Please enter your Pregnancies")
-        glucose   = st.number_input("Please enter your Glucose")
-        blood     = st.number_input("Please enter your BloodPressure")
-        skin      = st.number_input("Please enter your SkinThickness")
-        insulin   = st.number_input("Please enter your Insulin")
-        bmi       = st.number_input("Please enter your BMI")
-        pedigree  = st.number_input("Please enter your Diabetes Pedigree Function")
-        age       = st.number_input("Please enter your Age")
+# Define the default route 
+@app.get("/")
+def root():
+    return {"message": "Welcome to Diabetes Classification FastAPI"}
 
-        inputs = [pregnancy,glucose,blood,skin,insulin,float(bmi), float(pedigree),age]
+# Define the route to the sentiment predictor
+# inputs = [pregnancy,glucose,blood,skin,insulin,float(bmi), float(pedigree),age]
+@app.post("/predict_diabetes")
+def predict_diabetes(inputs:list): #given format : [[6,148,72,35,0,33.6,0.627,50]] 
 
-        print(inputs)
+    polarity = ""
 
-        if st.button("Predict"):
+    if(not(inputs)):
+        raise HTTPException(status_code=400, 
+                            detail = "Please Provide a valid inputs")
 
-            prediction = diabetes_clf.predict([inputs])
+    prediction = diabetes_clf.predict(inputs)
 
-            if(prediction[0] == 0):
-                info = 'You don\'t have diabetes!'
+    if(prediction[0] == 0):
+        polarity = 'You don\'t have diabetes!'
 
-            else:
-                info = 'Unfortunately you have diabetes!'
-            st.success('Prediction: {}'.format(info))
-
-if __name__ == "__main__":
-    main()
+    elif(prediction[0] == 1):
+        polarity =  'Unfortunately you have diabetes!'
+        
+    return {
+            "text_message": inputs, 
+            "diabetes_polarity": polarity
+           }
